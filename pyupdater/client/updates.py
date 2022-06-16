@@ -223,6 +223,8 @@ class Restarter(object):  # pragma: no cover
         self.current_app = current_app
         self.name = kwargs.get("name", "")
         self.strategy = kwargs.get("strategy", UpdateStrategy.DEFAULT)
+        self.exclude_files = kwargs.get("exclude_files", [])
+        self.exclude_list = ["\XF"].extend(self.exclude_files) if self.exclude_files else []
         log.debug("Current App: %s", self.current_app)
         self.is_win = sys.platform == "win32"
         if self.is_win is True and self.strategy == UpdateStrategy.OVERWRITE:
@@ -262,11 +264,11 @@ class Restarter(object):  # pragma: no cover
 chcp 65001
 echo Updating to latest version...
 ping 127.0.0.1 -n 5 -w 1000 > NUL
-robocopy "{}" "{}" /e /r:5 /w:1 /move /V /PURGE > NUL
+robocopy "{}" "{}" /e /move /V /PURGE {} > NUL
 DEL "{}"
 DEL "%~f0"
 """.format(
-                        self.updated_app, self.current_app, self.vbs_file
+                        self.updated_app, self.current_app, " ".join(self.exclude_list), self.vbs_file
                     )
                 )
             else:
@@ -312,7 +314,7 @@ DEL "%~f0"
 chcp 65001
 echo Updating to latest version...
 ping 127.0.0.1 -n 5 -w 1000 > NUL
-robocopy "{}" "{}" /r:5 /w:1 /e /move /V > NUL
+robocopy "{}" "{}" /e /move /V {} > NUL
 echo restarting...
 start "" "{}"
 DEL "{}"
@@ -320,6 +322,7 @@ DEL "%~f0"
 """.format(
                         self.updated_app,
                         self.current_app,
+                        " ".join(self.exclude_list),
                         os.path.join(self.current_app, ".".join([self.name, "exe"])),
                         self.vbs_file,
                     )
@@ -444,6 +447,8 @@ class LibUpdate(object):
 
         # The update strategy to use
         self.strategy = data.get("strategy", UpdateStrategy.DEFAULT)
+
+        self.exclude_files = data.get("exclude_files", [])
 
         # The latest version available
         self.latest = get_highest_version(
@@ -824,7 +829,7 @@ class AppUpdate(LibUpdate):  # pragma: no cover
                 # executable will be in the MacOS folder.
                 current_app = os.path.join(mac_app_binary_dir, sys.executable)
 
-        r = Restarter(current_app, name=self.name)
+        r = Restarter(current_app, name=self.name, exclude_files=self.exclude_files)
         r.process()
 
     def _win_rename(self):
@@ -902,7 +907,7 @@ class AppUpdate(LibUpdate):  # pragma: no cover
             updated_app = os.path.join(self.update_folder, self.name)
 
         update_info = dict(
-            data_dir=self.data_dir, updated_app=updated_app, name=self.name
+            data_dir=self.data_dir, updated_app=updated_app, name=self.name, exclude_files=self.exclude_files
         )
         r = Restarter(current_app, **update_info)
         r.process(win_restart=False)
@@ -922,7 +927,7 @@ class AppUpdate(LibUpdate):  # pragma: no cover
             updated_app = os.path.join(self.update_folder, self.name)
 
         update_info = dict(
-            data_dir=self.data_dir, updated_app=updated_app, name=self.name
+            data_dir=self.data_dir, updated_app=updated_app, name=self.name, exclude_files=self.exclude_files
         )
         r = Restarter(current_app, **update_info)
         r.process()

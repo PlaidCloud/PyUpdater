@@ -156,6 +156,9 @@ class Client(object):
         # Name of the app author
         self.company_name = config.get("COMPANY_NAME", "Digital Sapphire")
 
+        # Files to exclude when copying update
+        self.excluded_files = config.get("EXCLUDED_FILES", [])
+
         # Used in testing to force use of the mac archive
         if test:
             # Making platform deterministic for tests.
@@ -325,6 +328,7 @@ class Client(object):
             "headers": self.headers,
             "downloader": self.downloader,
             "strategy": self.strategy,
+            "excluded_files": self.excluded_files
         }
 
         data.update(self._gen_file_downloader_options())
