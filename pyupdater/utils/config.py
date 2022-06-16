@@ -53,6 +53,8 @@ class Config(dict):
             "MAX_DOWNLOAD_RETRIES": 3,
             # HTTP TIMEOUT
             "HTTP_TIMEOUT": 30,
+            # Files to exclude
+            "EXCLUDE_FILES": []
         }
         self.update(config_template)
 
