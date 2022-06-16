@@ -262,7 +262,7 @@ class Restarter(object):  # pragma: no cover
 chcp 65001
 echo Updating to latest version...
 ping 127.0.0.1 -n 5 -w 1000 > NUL
-robocopy "{}" "{}" /e /move /V /PURGE > NUL
+robocopy "{}" "{}" /e /r:5 /w:1 /move /V /PURGE > NUL
 DEL "{}"
 DEL "%~f0"
 """.format(
@@ -312,7 +312,7 @@ DEL "%~f0"
 chcp 65001
 echo Updating to latest version...
 ping 127.0.0.1 -n 5 -w 1000 > NUL
-robocopy "{}" "{}" /e /move /V > NUL
+robocopy "{}" "{}" /r:5 /w:1 /e /move /V > NUL
 echo restarting...
 start "" "{}"
 DEL "{}"
