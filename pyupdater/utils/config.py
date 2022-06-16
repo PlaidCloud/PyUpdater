@@ -54,7 +54,7 @@ class Config(dict):
             # HTTP TIMEOUT
             "HTTP_TIMEOUT": 30,
             # Files to exclude
-            "EXCLUDED_FILES": []
+            "EXCLUDE_FILES": []
         }
         self.update(config_template)
 

@@ -157,7 +157,7 @@ class Client(object):
         self.company_name = config.get("COMPANY_NAME", "Digital Sapphire")
 
         # Files to exclude when copying update
-        self.excluded_files = config.get("EXCLUDED_FILES", [])
+        self.exclude_files = config.get("EXCLUDE_FILES", [])
 
         # Used in testing to force use of the mac archive
         if test:
