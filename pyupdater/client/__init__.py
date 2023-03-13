@@ -328,7 +328,7 @@ class Client(object):
             "headers": self.headers,
             "downloader": self.downloader,
             "strategy": self.strategy,
-            "excluded_files": self.excluded_files
+            "exclude_files": self.exclude_files
         }
 
         data.update(self._gen_file_downloader_options())

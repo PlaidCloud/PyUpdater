@@ -224,7 +224,7 @@ class Restarter(object):  # pragma: no cover
         self.name = kwargs.get("name", "")
         self.strategy = kwargs.get("strategy", UpdateStrategy.DEFAULT)
         self.exclude_files = kwargs.get("exclude_files", [])
-        self.exclude_list = ["\XF"].extend(self.exclude_files) if self.exclude_files else []
+        self.exclude_list = ["\XF"] + self.exclude_files if self.exclude_files else []
         log.debug("Current App: %s", self.current_app)
         self.is_win = sys.platform == "win32"
         if self.is_win is True and self.strategy == UpdateStrategy.OVERWRITE:
